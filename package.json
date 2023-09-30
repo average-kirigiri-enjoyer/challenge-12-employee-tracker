@@ -1,0 +1,24 @@
+{
+  "name": "challenge-12-employee-tracker",
+  "version": "1.0.0",
+  "description": "employee tracker",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/average-kirigiri-enjoyer/employee-tracker.git"
+  },
+  "author": "ethan (average-kirigiri-enjoyer)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/average-kirigiri-enjoyer/employee-tracker/issues"
+  },
+  "homepage": "https://github.com/average-kirigiri-enjoyer/employee-tracker#readme",
+  "dependencies": {
+    "inquirer": "^8.2.4",
+    "mysql2": "^3.6.1"
+  }
+}
