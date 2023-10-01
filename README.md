@@ -16,7 +16,7 @@ Download the repository files to your computer, and extract the zipped files to 
 
 ## Usage
 
-Navigate to the repository a git bash shell (or equivalent), and type "node server.js".
+Navigate to the repository a git bash shell (or equivalent), and type "npm install" to install the application's dependencies, then type "node server.js".
 
 ***[USAGE GUIDE]***
 
