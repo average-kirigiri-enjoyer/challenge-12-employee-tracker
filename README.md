@@ -26,6 +26,9 @@ See a video demonstrating the application's functionality [here](https://drive.g
 
 ## Credits
 
+.promise() wrapper syntax (./server.js, LINES GO HERE);
+https://www.npmjs.com/package/mysql2#using-promise-wrapper
+
 MIT License Badge (./README.md, line 1);
 https://gist.github.com/lukas-h/2a5d00690736b4c3a7ba
 

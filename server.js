@@ -2,7 +2,7 @@
 ethan (average-kirigiri-enjoyer)
 SCS Boot Camp Module 12 Weekly Challenge - Employee Tracker
 Created 2023/09/30
-Last Edited 2023/10/01
+Last Edited 2023/10/02
 */
 
 //importing packages
@@ -32,77 +32,106 @@ const db = mysql.createConnection(
 //function to process the user's main menu choice
 const processMenuChoice = (data) =>
 {
-  if (data.menuChoice === "View All Departments")
+  let menuType; //variable to hold type of menu choice selected by user
+  let menuChoice; //variable to hold the specific menu choice selected by the user, within the scope of the above type
+
+  if (data.menuChoice === "View All Departments") //assigns variables to set up an SQL query to retrieve all department data
   {
-    db.query(`SELECT * FROM department`, (err, results) =>
-    {
-      if (err)
-      {
-        console.log(err);
-      }
-      else
-      {
-        console.log(results);
-      }
-    });
+    menuType = "view";
+    menuChoice = "department";
   }
-  else if (data.menuChoice === "View All Roles")
+  else if (data.menuChoice === "View All Roles") //assigns variables to set up an SQL query to retrieve all role data
   {
-    db.query(`SELECT * FROM role`, (err, results) =>
-    {
-      if (err)
-      {
-        console.log(err);
-      }
-      else
-      {
-        console.log(results);
-      }
-    });
+    menuType = "view";
+    menuChoice = "role";
   }
-  else if (data.menuChoice === "View All Employees")
+  else if (data.menuChoice === "View All Employees") //assigns variables to set up an SQL query to retrieve all employee data
   {
-    db.query(`SELECT * FROM employee`, (err, results) =>
-    {
-      if (err)
-      {
-        console.log(err);
-      }
-      else
-      {
-        console.log(results);
-      }
-    });
+    menuType = "view";
+    menuChoice = "employee";
   }
-  else
+  else if (data.menuChoice === "Add Department") //assigns variables to set up an inquirer prompt to add a new department to the database
   {
-    console.log("haven't added that yet");
+    menuType = "add";
+    menuChoice = "department";
+  }
+  else if (data.menuChoice === "Add Role") //assigns variables to set up an inquirer prompt to add a new role to the database
+  {
+    menuType = "add";
+    menuChoice = "role";
+  }
+  else if (data.menuChoice === "Add Employee") //assigns variables to set up an inquirer prompt to add a new employee to the database
+  {
+    menuType = "add";
+    menuChoice = "employee";
+  }
+  else if (data.menuChoice === "Update Employee Role") //assigns variable to set up an inquirer prompt to update an employee's role
+  {
+    menuType = "update";
+    menuChoice = "employee"; //even though this is unnecessary, assignde for future proofing
+  }
+
+  //if the user chose an option involving viewing data, query the database as per their menu choice
+  if (menuType === "view")
+  {
+    db.promise().query(`SELECT * FROM ${menuChoice}`)
+    .then(([rows, fields]) => console.log(rows))
+    .then(() => displayMainMenu()) //returns to main menu
+    .catch((err) => console.log(err));
+  }
+  else if (menuType === "add")
+  {
+    console.log(`added to ${menuChoice} table! i definitely did! not a placeholder!`);
+    //if statements to filter between adding department, role, and employee, as they have different fields
+      //if statements determine the fields to be added, e.g. const fields = `(id, name)` -> INSERT INTO ${menuchoice} ${fields} VALUES etc...
+      //within each if statement, also runs the associated set of inquirer prompts to retrieve the data needed to add to database
+    //returns to main menu
+  }
+  else if (menuType === "update")
+  {
+    console.log(`updated the employee table! i definitely did! not a placeholder!`);
+    //queries list of employees, adds them to an array, and uses that as a list of choices in an inquirer prompt
+    //after the user chooses an employee to update;
+      //saves the chosen employee's ID to a variable X
+      //queries list of roles, adds them to an array, and uses that as a list of choices in an inquirer prompt
+    //UPDATE [...] WHERE id = X to change the appropriate employee's role
+    //returns to main menu
   }
 }
 
 //function to initialize the application's main menu
 const initializeMainMenu = () =>
 {
+  //attempts to print large ASCII text to console when application is first run
+  figlet(`Employee\nManager`, (err, data) =>
+  {
+    if (err) //if there was an error in the text generation process, log that to the CLI
+    {
+      console.log(err);
+    }
+    else //otherwise, print the large ASCII text
+    {
+      console.log(data);
+    }
+  });
+
+  //waits 50 milliseconds for figlet to be properly printed, to prevent conflicts with displaying the main menu via inquirer
+  setTimeout(() =>
+  {
+    displayMainMenu();
+  }, 50);
+}
+
+//function to display the main menu options via inquirer
+const displayMainMenu = () =>
+{
   //presents the user with a list of main menu options
   inquirer.prompt(mainMenu)
-  .then(function(data)
+  .then(function(data) //processes the user's menu choice
   {
     processMenuChoice(data);
   });
 }
-
-//attempts to print large ASCII text to console when application is first run
-figlet(`Employee\nManager`, (err, data) =>
-{
-  if (err) //if there was an error in the text generation process, log that to the CLI
-  {
-    console.log(err);
-  }
-  else //otherwise, print the large ASCII text
-  {
-    console.log(data);
-  }
-});
 
 //initializes application main menu
 initializeMainMenu();
