@@ -5,17 +5,19 @@ Created 2023/09/30
 Last Edited 2023/10/01
 */
 
--- Creates employees_db; database if it doesn't exist, and begin actively using it
+-- Initializes employees database
 DROP DATABASE IF EXISTS employees_db;
 CREATE DATABASE employees_db;
 USE employees_db;
 
+-- Creates department table
 CREATE TABLE department
 (
   id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
   name VARCHAR(30) NOT NULL
 );
 
+-- Creates role table, with an ID linked to the department the role falls under
 CREATE TABLE role
 (
   id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
@@ -25,6 +27,7 @@ CREATE TABLE role
   FOREIGN KEY (department_id) REFERENCES department(id) ON DELETE SET NULL
 );
 
+-- Creates employee table, with an ID linked to the job title of that employee, and also their manager, if applicable
 CREATE TABLE employee
 (
   id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,

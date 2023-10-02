@@ -19,6 +19,7 @@
   "homepage": "https://github.com/average-kirigiri-enjoyer/employee-tracker#readme",
   "dependencies": {
     "dotenv": "^16.3.1",
+    "figlet": "^1.6.0",
     "inquirer": "^8.2.4",
     "mysql2": "^3.6.1"
   }
