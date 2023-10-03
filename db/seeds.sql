@@ -12,18 +12,18 @@ INSERT INTO department (name) VALUES
 ("Legal");
 
 INSERT INTO role (title, salary, department_id) VALUES
-("Sales Lead", "120000", 1),
-("Sales Representative", "60000", 1),
-("Marketing Lead", "120000", 1),
-("Marketing Researcher", "80000", 1),
-("Lead Designer", "100000", 2),
-("Programmer", "60000", 2),
-("Artist", "40000", 2),
-("Writer", "40000", 2),
-("Community Manager", "60000", 3), 
-("Customer Service", "30000", 3),
-("Chief Legal Officer", "120000", 4),
-("Legal Representative", "80000", 4);
+("Sales Lead", 120000, 1),
+("Sales Representative", 60000, 1),
+("Marketing Lead", 120000, 1),
+("Marketing Researcher", 80000, 1),
+("Lead Designer", 100000, 2),
+("Programmer", 60000, 2),
+("Artist", 40000, 2),
+("Writer", 40000, 2),
+("Community Manager", 60000, 3), 
+("Customer Service", 30000, 3),
+("Chief Legal Officer", 120000, 4),
+("Legal Representative", 80000, 4);
 
 INSERT INTO employee (first_name, last_name, role_id, manager_id) VALUES
 ("Kang", "Won-ki", 1, NULL),
