@@ -20,6 +20,70 @@ const mainMenu = [
   choices: ["View All Departments", "View All Roles", "View All Employees", "Add Department", "Add Role", "Add Employee", "Update Employee Role"]
 }];
 
+//defining prompts to add a new department to database
+const addDepartment = [
+{
+  type: "input",
+  message: "What should the new department's name be?",
+  name: "departmentName"
+}];
+
+//function to return inquirer prompts where retrieving information from the database is necessary
+const updateInquirerPrompts = (category) =>
+{
+  if (category === "role")
+  {
+    //save sql query for list of all departments to a variable
+
+    return [
+    {
+      type: "input",
+      message: "What should the new role's name be?",
+      name: "roleName"
+    },
+    {
+      type: "input",
+      message: "What should the new role's salary be?",
+      name: "roleSalary"
+    },
+    {
+      type: "list",
+      message: "Which department should the new role fall under?",
+      name: "roleDepartment",
+      choices: [/*template literal to insert the array of departments from database here*/]
+    }];
+  }
+  else if (category === "employee")
+  {
+    //save sql query for list of all roles to a variable
+    //save sql query for list of all employees to a variable
+
+    return [
+    {
+      type: "input",
+      message: "What is the new employee's first name?",
+      name: "employeeFirstName"
+    },
+    {
+      type: "input",
+      message: "What is the new employee's last name?",
+      name: "employeeFirstName"
+    },
+    {
+      type: "list",
+      message: "What is the new employee's role?",
+      name: "employeeRole",
+      choices: [/*template literal to insert the array of roles from database here*/]
+    },
+    {
+      type: "list",
+      message: "Who is the new employee's manager?",
+      name: "employeeManager",
+      choices: [/*template literal to insert the array of employees from database here*/]
+    }];
+  }
+}
+
 //initalize connection to mySQL database
 const db = mysql.createConnection(
 {
@@ -82,6 +146,21 @@ const processMenuChoice = (data) =>
   else if (menuType === "add")
   {
     console.log(`added to ${menuChoice} table! i definitely did! not a placeholder!`);
+    let fields;
+    let newEntry;
+
+    if (menuChoice === "department")
+    {
+
+    }
+    else if (menuChoice === "role")
+    {
+      
+    }
+    else if (menuChoice === "employee")
+    {
+      
+    }
     //if statements to filter between adding department, role, and employee, as they have different fields
       //if statements determine the fields to be added, e.g. const fields = `(id, name)` -> INSERT INTO ${menuchoice} ${fields} VALUES etc...
       //within each if statement, also runs the associated set of inquirer prompts to retrieve the data needed to add to database
