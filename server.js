@@ -2,7 +2,7 @@
 ethan (average-kirigiri-enjoyer)
 SCS Boot Camp Module 12 Weekly Challenge - Employee Tracker
 Created 2023/09/30
-Last Edited 2023/10/02
+Last Edited 2023/10/03
 */
 
 //importing packages
@@ -29,35 +29,58 @@ const addDepartment = [
 }];
 
 //function to return inquirer prompts where retrieving information from the database is necessary
-const updateInquirerPrompts = (category) =>
+const updateInquirerPrompts = async (category) =>
 {
-  if (category === "role")
+  if (category === "role") //checks if the user is attempting to add to the 'role' table
   {
-    //save sql query for list of all departments to a variable
-
-    return [
+    try //we learned about try / catch statements in class yesterday; i'm gonna try it out!
     {
-      type: "input",
-      message: "What should the new role's name be?",
-      name: "roleName"
-    },
+      const [rows, fields] = await db.promise().query(`SELECT * FROM department`);
+      const departments = rows.map(department => department.name);
+      
+      //uses the departments list as an array of department options to add the new role to, and returns the set of questions
+      return [
+      {
+        type: "input",
+        message: "What should the new role's name be?",
+        name: "roleName"
+      },
+      {
+        type: "input",
+        message: "What should the new role's salary be?",
+        name: "roleSalary"
+      },
+      {
+        type: "list",
+        message: "Which department should the new role fall under?",
+        name: "roleDepartment",
+        choices: departments
+      }];
+    }
+    catch(err)
     {
-      type: "input",
-      message: "What should the new role's salary be?",
-      name: "roleSalary"
-    },
-    {
-      type: "list",
-      message: "Which department should the new role fall under?",
-      name: "roleDepartment",
-      choices: [/*template literal to insert the array of departments from database here*/]
-    }];
+      console.log(err);
+    }
   }
-  else if (category === "employee")
+  else if (category === "employee") //checks if the user is attempting to add to the 'employee' table
   {
-    //save sql query for list of all roles to a variable
-    //save sql query for list of all employees to a variable
+    //perform SQL query to save list of role names to a variable
+    let roles = await db.promise().query(`SELECT * FROM role`)
+    .then(([rows, fields]) => rows.map(role => role.title))
+    .catch((err) => console.log(err));
 
+    //perform SQL query to save list of employee first & last names to a variable
+    let employees = await db.promise().query(`SELECT * FROM ${category}`)
+    .then(([rows, fields]) => rows.map(employee => `${employee.first_name} ${employee.last_name}`))
+    .catch((err) => console.log(err));
+
+    //adds "None" to the top of the list of employees, indicated that the employee does not have an assigned manager
+    employees.unshift("None");
+
+    console.log(roles);
+    console.log(employees);
+
+    //uses the above variables as lists for role & manager options to assign to the new employee, and returns the set of questions
     return [
     {
       type: "input",
@@ -67,19 +90,19 @@ const updateInquirerPrompts = (category) =>
     {
       type: "input",
       message: "What is the new employee's last name?",
-      name: "employeeFirstName"
+      name: "employeeLastName"
     },
     {
       type: "list",
       message: "What is the new employee's role?",
       name: "employeeRole",
-      choices: [/*template literal to insert the array of roles from database here*/]
+      choices: roles
     },
     {
       type: "list",
       message: "Who is the new employee's manager?",
       name: "employeeManager",
-      choices: [/*template literal to insert the array of employees from database here*/]
+      choices: employees
     }];
   }
 }
@@ -94,7 +117,7 @@ const db = mysql.createConnection(
 });
 
 //function to process the user's main menu choice
-const processMenuChoice = (data) =>
+const processMenuChoice = async (data) =>
 {
   let menuType; //variable to hold type of menu choice selected by user
   let menuChoice; //variable to hold the specific menu choice selected by the user, within the scope of the above type
@@ -145,21 +168,39 @@ const processMenuChoice = (data) =>
   }
   else if (menuType === "add")
   {
-    console.log(`added to ${menuChoice} table! i definitely did! not a placeholder!`);
-    let fields;
-    let newEntry;
-
     if (menuChoice === "department")
     {
-
+      inquirer.prompt(addDepartment)
+      .then(function(data) //processes the user's menu choice
+      {
+        console.log(data);
+      })
+      .then(() => displayMainMenu()) //returns to main menu
+      .catch((err) => console.log(err));
     }
     else if (menuChoice === "role")
     {
-      
+      let addRole = await updateInquirerPrompts(menuChoice);
+
+      inquirer.prompt(addRole)
+      .then(function(data) //processes the user's menu choice
+      {
+        console.log(data);
+      })
+      .then(() => displayMainMenu()) //returns to main menu
+      .catch((err) => console.log(err));
     }
     else if (menuChoice === "employee")
     {
-      
+      let addEmployee = await updateInquirerPrompts(menuChoice);
+
+      inquirer.prompt(addEmployee)
+      .then(function(data) //processes the user's menu choice
+      {
+        console.log(data);
+      })
+      .then(() => displayMainMenu()) //returns to main menu
+      .catch((err) => console.log(err));
     }
     //if statements to filter between adding department, role, and employee, as they have different fields
       //if statements determine the fields to be added, e.g. const fields = `(id, name)` -> INSERT INTO ${menuchoice} ${fields} VALUES etc...
