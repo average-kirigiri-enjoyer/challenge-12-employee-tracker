@@ -102,6 +102,33 @@ const updateInquirerPrompts = async (category) =>
       choices: employees
     }];
   }
+  else if (category === "update")
+  {
+    //perform SQL query to save list of role names to a variable
+    let roles = await db.promise().query(`SELECT * FROM role`)
+    .then(([rows]) => rows.map(role => role.title))
+    .catch((err) => console.log(err));
+    
+    //perform SQL query to save list of employee first & last names to a variable
+    let employees = await db.promise().query(`SELECT * FROM employee`)
+    .then(([rows]) => rows.map(employee => `${employee.first_name} ${employee.last_name}`))
+    .catch((err) => console.log(err));
+
+    //uses the above variables as lists for role & manager options to assign to the new employee, and returns the set of questions
+    return [
+    {
+      type: "list",
+      message: "Which employee do you want to re-assign?",
+      name: "employeeName",
+      choices: employees
+    },
+    {
+      type: "list",
+      message: "What should their new role be?",
+      name: "roleName",
+      choices: roles
+    }];
+  }
 }
 
 //initalize connection to mySQL database
@@ -226,20 +253,23 @@ const processMenuChoice = async (data) =>
       })
       .catch((err) => console.log(err));
     }
-    //if statements to filter between adding department, role, and employee, as they have different fields
-      //if statements determine the fields to be added, e.g. const fields = `(id, name)` -> INSERT INTO ${menuchoice} ${fields} VALUES etc...
-      //within each if statement, also runs the associated set of inquirer prompts to retrieve the data needed to add to database
-    //returns to main menu
   }
   else if (menuType === "update")
   {
-    console.log(`updated the employee table! i definitely did! not a placeholder!`);
-    //queries list of employees, adds them to an array, and uses that as a list of choices in an inquirer prompt
-    //after the user chooses an employee to update;
-      //saves the chosen employee's ID to a variable X
-      //queries list of roles, adds them to an array, and uses that as a list of choices in an inquirer prompt
-    //UPDATE [...] WHERE id = X to change the appropriate employee's role
-    //returns to main menu
+    let updateEmployee = await updateInquirerPrompts(menuType);
+
+    inquirer.prompt(updateEmployee)
+    .then(async (data) =>
+    {
+      let newRole_id = await db.promise().query(`SELECT id FROM role WHERE title = ?`, [data.roleName])
+      .then(([rows]) => rows[0].id) //returns the ID of the role the user chose the new employee to have
+      .catch((err) => console.log(err));
+
+      await db.promise().query(`UPDATE employee SET role_id = ? WHERE CONCAT(first_name, " ", last_name) = ?`, [newRole_id, data.employeeName])
+      .then(() => displayMainMenu()) //returns to main menu
+      .catch((err) => console.log(err));
+    })
+    .catch((err) => console.log(err));
   }
 }
 
