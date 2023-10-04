@@ -2,7 +2,7 @@
 ethan (average-kirigiri-enjoyer)
 SCS Boot Camp Module 12 Weekly Challenge - Employee Tracker
 Created 2023/09/30
-Last Edited 2023/10/03
+Last Edited 2023/10/04
 */
 
 //importing packages
@@ -185,25 +185,33 @@ const processMenuChoice = async (data) =>
   //if the user chose an option involving viewing data, query the database as per their menu choice
   if (menuType === "view")
   {
-    db.promise().query(`SELECT * FROM ${menuChoice}`)
-    .then(([rows]) =>
+    if (menuChoice === "department")
     {
-      if (menuChoice === "department")
+      await db.promise().query(`SELECT id, name AS department_name FROM department`)
+      .then(([rows]) => console.table(rows))
+      .catch((err) => console.log(err));
+    }
+    else if (menuChoice === "role")
+    {
+      await db.promise().query(`SELECT role.id, role.title AS job_title, role.salary, department.name AS department FROM role JOIN department ON role.department_id = department.id`)
+      .then(([rows]) =>
       {
         console.table(rows);
-      }
-      else if (menuChoice === "role")
+      })
+      .catch((err) => console.log(err));
+    }
+    else if (menuChoice === "employee")
+    {
+      await db.promise().query(`SELECT emp.id AS id, emp.first_name AS first_name, emp.last_name AS last_name, role.title AS job_title, role.salary, department.name AS department, CONCAT(mng.first_name, " ", mng.last_name) AS manager FROM employee emp JOIN role ON emp.role_id = role.id JOIN department ON role.department_id = department.id LEFT JOIN employee mng ON emp.manager_id = mng.id;`)
+      .then(([rows]) =>
       {
         console.table(rows);
-      }
-      else if (menuChoice === "employee")
-      {
-        console.table(rows);
-      }
-      
-    })
-    .then(() => displayMainMenu()) //returns to main menu
-    .catch((err) => console.log(err));
+      })
+      .catch((err) => console.log(err));
+    }
+
+    //returns to main menu once the table is logged to console
+    displayMainMenu();
   }
   else if (menuType === "add")
   {

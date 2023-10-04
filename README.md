@@ -32,6 +32,9 @@ https://www.npmjs.com/package/mysql2#using-promise-wrapper
 try / catch syntax (./server.js, LINES GO HERE);
 https://www.w3schools.com/js/js_errors.asp
 
+SELF JOIN syntax (./server.js, LINES GO HERE);
+https://www.w3schools.com/sql/sql_join_self.asp
+
 MIT License Badge (./README.md, line 1);
 https://gist.github.com/lukas-h/2a5d00690736b4c3a7ba
 
