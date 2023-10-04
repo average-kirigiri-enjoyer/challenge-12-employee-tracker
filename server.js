@@ -35,10 +35,10 @@ const updateInquirerPrompts = async (category) =>
   {
     try //we learned about try / catch statements in class yesterday; i'm gonna try it out!
     {
-      const [rows, fields] = await db.promise().query(`SELECT * FROM department`);
-      const departments = rows.map(department => department.name);
+      const [rows] = await db.promise().query(`SELECT * FROM department`); //retrieves a list of all departments from the database
+      const departments = rows.map(department => department.name); //maps each department's name to a new 'departments' array
       
-      //uses the departments list as an array of department options to add the new role to, and returns the set of questions
+      //uses the above 'departments' list as an array of department options to add the new role to, and returns the set of questions
       return [
       {
         type: "input",
@@ -57,7 +57,7 @@ const updateInquirerPrompts = async (category) =>
         choices: departments
       }];
     }
-    catch(err)
+    catch(err) //if an error occurs, catch it & log it to console
     {
       console.log(err);
     }
@@ -74,7 +74,7 @@ const updateInquirerPrompts = async (category) =>
     .then(([rows]) => rows.map(employee => `${employee.first_name} ${employee.last_name}`))
     .catch((err) => console.log(err));
 
-    //adds "None" to the top of the list of employees, indicated that the employee does not have an assigned manager
+    //adds "None" to the top of the list of employees, indicating that the employee does not have an assigned manager
     employees.unshift("None");
 
     //uses the above variables as lists for role & manager options to assign to the new employee, and returns the set of questions
@@ -146,117 +146,116 @@ const processMenuChoice = async (data) =>
   let menuType; //variable to hold type of menu choice selected by user
   let menuChoice; //variable to hold the specific menu choice selected by the user, within the scope of the above type
 
-  if (data.menuChoice === "View All Departments") //assigns variables to set up an SQL query to retrieve all department data
+  //assign the appropriate variables as per the user's menu option choice
+  if (data.menuChoice === "View All Departments")
   {
     menuType = "view";
     menuChoice = "department";
   }
-  else if (data.menuChoice === "View All Roles") //assigns variables to set up an SQL query to retrieve all role data
+  else if (data.menuChoice === "View All Roles")
   {
     menuType = "view";
     menuChoice = "role";
   }
-  else if (data.menuChoice === "View All Employees") //assigns variables to set up an SQL query to retrieve all employee data
+  else if (data.menuChoice === "View All Employees")
   {
     menuType = "view";
     menuChoice = "employee";
   }
-  else if (data.menuChoice === "Add Department") //assigns variables to set up an inquirer prompt to add a new department to the database
+  else if (data.menuChoice === "Add Department")
   {
     menuType = "add";
     menuChoice = "department";
   }
-  else if (data.menuChoice === "Add Role") //assigns variables to set up an inquirer prompt to add a new role to the database
+  else if (data.menuChoice === "Add Role")
   {
     menuType = "add";
     menuChoice = "role";
   }
-  else if (data.menuChoice === "Add Employee") //assigns variables to set up an inquirer prompt to add a new employee to the database
+  else if (data.menuChoice === "Add Employee")
   {
     menuType = "add";
     menuChoice = "employee";
   }
-  else if (data.menuChoice === "Update Employee Role") //assigns variable to set up an inquirer prompt to update an employee's role
+  else if (data.menuChoice === "Update Employee Role")
   {
     menuType = "update";
-    menuChoice = "employee"; //even though this is unnecessary, assignde for future proofing
+    menuChoice = "employee"; //assigning this is unnecessary, but is good future-proofing if functionality for updating other parts of the database were implemented
   }
 
-  //if the user chose an option involving viewing data, query the database as per their menu choice
-  if (menuType === "view")
+  if (menuType === "view") //checks if the user is attempting to view from the database
   {
-    if (menuChoice === "department")
+    if (menuChoice === "department") //checks if the user chose to view all departments
     {
+      //attempts to print the ID & name of each department in a table to the console
       await db.promise().query(`SELECT id, name AS department_name FROM department`)
       .then(([rows]) => console.table(rows))
-      .catch((err) => console.log(err));
+      .catch((err) => console.log(err)); //if an error occurs, log it to the console
     }
-    else if (menuChoice === "role")
+    else if (menuChoice === "role") //checks if the user chose to view all roles
     {
+      //attempts to print the ID, title, salary, and department of each role to the console
       await db.promise().query(`SELECT role.id, role.title AS job_title, role.salary, department.name AS department FROM role JOIN department ON role.department_id = department.id`)
-      .then(([rows]) =>
-      {
-        console.table(rows);
-      })
-      .catch((err) => console.log(err));
+      .then(([rows]) => console.table(rows))
+      .catch((err) => console.log(err)); //if an error occurs, log it to the console
     }
     else if (menuChoice === "employee")
     {
-      await db.promise().query(`SELECT emp.id AS id, emp.first_name AS first_name, emp.last_name AS last_name, role.title AS job_title, role.salary, department.name AS department, CONCAT(mng.first_name, " ", mng.last_name) AS manager FROM employee emp JOIN role ON emp.role_id = role.id JOIN department ON role.department_id = department.id LEFT JOIN employee mng ON emp.manager_id = mng.id;`)
-      .then(([rows]) =>
-      {
-        console.table(rows);
-      })
-      .catch((err) => console.log(err));
+      //attempts to print the ID, first name, last name, job title, salary, department, and manager of each employee to the console
+      await db.promise().query(`SELECT emp.id AS id, emp.first_name AS first_name, emp.last_name AS last_name, role.title AS job_title, role.salary, department.name AS department, CONCAT(mng.first_name, " ", mng.last_name) AS manager FROM employee emp JOIN role ON emp.role_id = role.id JOIN department ON role.department_id = department.id LEFT JOIN employee mng ON emp.manager_id = mng.id`)
+      .then(([rows]) => console.table(rows))
+      .catch((err) => console.log(err)); //if an error occurs, log it to the console
     }
 
-    //returns to main menu once the table is logged to console
+    //returns to main menu after the table is logged to console
     displayMainMenu();
   }
-  else if (menuType === "add")
+  else if (menuType === "add") //checks if the user is attempting to add to the database
   {
-    if (menuChoice === "department")
+    if (menuChoice === "department") //checks if the user is attempting to add a department
     {
-      inquirer.prompt(addDepartment)
+      inquirer.prompt(addDepartment) //begins inquirer prompts for adding a new department
       .then((data) =>
       {
-        //attempts to add new role to database
+        //attempts to add new department to database as per the user's input
         db.promise().query(`INSERT INTO department (name) VALUES (?)`, [data.departmentName])
-        .then(() => displayMainMenu()) //returns to main menu
-        .catch((err) => console.log(err));
+        .then(() => displayMainMenu()) //return to the main menu
+        .catch((err) => console.log(err)); //if an error occurs, log it to the console
       })
-      .catch((err) => console.log(err));
+      .catch((err) => console.log(err)); //if an error occurs, log it to the console
     }
-    else if (menuChoice === "role")
+    else if (menuChoice === "role") //checks if the user is attempting to add a role
     {
-      let addRole = await updateInquirerPrompts(menuChoice);
+      let addRole = await updateInquirerPrompts(menuChoice); //creates variable holding an inquirer question set for adding a new role
 
-      inquirer.prompt(addRole)
+      inquirer.prompt(addRole) //begins inquirer prompts for adding a new role
       .then(async (data) =>
       {
+        //retrieves the ID of the department the user wants to add the new role too
         let department_id = await db.promise().query(`SELECT id FROM department WHERE name = ?`, [data.roleDepartment])
         .then(([rows]) => rows[0].id) //returns the ID of the department the user chose the new role to fall under
-        .catch((err) => console.log(err));
+        .catch((err) => console.log(err)); //if an error occurs, log it to the console
 
-        //attempts to add new role to database
+        //attempts to add new role to database as per the user's input
         await db.promise().query(`INSERT INTO role (title, salary, department_id) VALUES (?, ?, ?)`, [data.roleName, data.roleSalary, department_id])
         .then(() => displayMainMenu()) //returns to main menu
-        .catch((err) => console.log(err));
+        .catch((err) => console.log(err)); //if an error occurs, log it to the console
       })
-      .catch((err) => console.log(err));
+      .catch((err) => console.log(err)); //if an error occurs, log it to the console
     }
-    else if (menuChoice === "employee")
+    else if (menuChoice === "employee") //checks if the user is attempting to add a new employee
     {
-      let addEmployee = await updateInquirerPrompts(menuChoice);
+      let addEmployee = await updateInquirerPrompts(menuChoice); //creates variable holding an inquirer question set for adding a new employee
 
-      inquirer.prompt(addEmployee)
+      inquirer.prompt(addEmployee) //begins inquirer prompts for adding a new employee
       .then(async (data) =>
       {
+        //retrieves the ID of the role the user assigned to the new employee
         let role_id = await db.promise().query(`SELECT id FROM role WHERE title = ?`, [data.employeeRole])
         .then(([rows]) => rows[0].id) //returns the ID of the role the user chose the new employee to have
-        .catch((err) => console.log(err));
+        .catch((err) => console.log(err)); //if an error occurs, log it to the console
 
-        let manager_id; //initializes manager_id variable
+        let manager_id; //variable to hold the ID of the new employee's manager
 
         if (data.employeeManager === "None") //if the user did not assign a manager to the new employee, set the manager_id to NULL
         {
@@ -266,33 +265,35 @@ const processMenuChoice = async (data) =>
         {
           manager_id = await db.promise().query(`SELECT id FROM employee WHERE CONCAT(first_name, " ", last_name) = ?`, [data.employeeManager])
           .then(([rows]) => rows[0].id) //returns the ID of the department the user chose the new role to fall under
-          .catch((err) => console.log(err));
+          .catch((err) => console.log(err)); //if an error occurs, log it to the console
         }
 
         //attempts to add new role to database
         await db.promise().query(`INSERT INTO employee (first_name, last_name, role_id, manager_id) VALUES (?, ?, ?, ?)`, [data.employeeFirstName, data.employeeLastName, role_id, manager_id])
         .then(() => displayMainMenu()) //returns to main menu
-        .catch((err) => console.log(err));
+        .catch((err) => console.log(err)); //if an error occurs, log it to the console
       })
-      .catch((err) => console.log(err));
+      .catch((err) => console.log(err)); //if an error occurs, log it to the console
     }
   }
-  else if (menuType === "update")
+  else if (menuType === "update") //checks if the user is attempting to update an employee's role
   {
-    let updateEmployee = await updateInquirerPrompts(menuType);
+    let updateEmployee = await updateInquirerPrompts(menuType); //creates variable holding an inquirer question set for updating an employee's role
 
-    inquirer.prompt(updateEmployee)
+    inquirer.prompt(updateEmployee) //begins inquirer prompts for updating an employee's role
     .then(async (data) =>
     {
+      //retrieves ID of role the user wants to reassign the employee to
       let newRole_id = await db.promise().query(`SELECT id FROM role WHERE title = ?`, [data.roleName])
       .then(([rows]) => rows[0].id) //returns the ID of the role the user chose the new employee to have
-      .catch((err) => console.log(err));
+      .catch((err) => console.log(err)); //if an error occurs, log it to the console
 
+      //attempts to update the role of the employee the user wants to reassign
       await db.promise().query(`UPDATE employee SET role_id = ? WHERE CONCAT(first_name, " ", last_name) = ?`, [newRole_id, data.employeeName])
       .then(() => displayMainMenu()) //returns to main menu
-      .catch((err) => console.log(err));
+      .catch((err) => console.log(err)); //if an error occurs, log it to the console
     })
-    .catch((err) => console.log(err));
+    .catch((err) => console.log(err)); //if an error occurs, log it to the console
   }
 }
 
