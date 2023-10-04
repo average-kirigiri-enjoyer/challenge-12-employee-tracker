@@ -185,8 +185,23 @@ const processMenuChoice = async (data) =>
   //if the user chose an option involving viewing data, query the database as per their menu choice
   if (menuType === "view")
   {
-    db.promise().query(`SELECT * FROM ?`, [menuChoice])
-    .then(([rows]) => console.log(rows))
+    db.promise().query(`SELECT * FROM ${menuChoice}`)
+    .then(([rows]) =>
+    {
+      if (menuChoice === "department")
+      {
+        console.table(rows);
+      }
+      else if (menuChoice === "role")
+      {
+        console.table(rows);
+      }
+      else if (menuChoice === "employee")
+      {
+        console.table(rows);
+      }
+      
+    })
     .then(() => displayMainMenu()) //returns to main menu
     .catch((err) => console.log(err));
   }
