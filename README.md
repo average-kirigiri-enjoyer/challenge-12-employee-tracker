@@ -2,9 +2,7 @@
 
 ## Description
 
-***(PLACEHOLDER)*** weekly challenge for module 12; application to keep track of employees and their roles within a company 
-
-***[DESCRIPTION OF PROJECT'S INSPIRATION & PURPOSE]***
+Overseeing a company - especially a large one with lots of employees & tasks to complete - can be a very complicated and difficult task. This application intends to make managing a business much easier by allowing a user to track various departments, roles, & employees within a company.
 
 ## Installation
 
@@ -16,24 +14,17 @@ Download the repository files to your computer, and extract the zipped files to 
 
 ## Usage
 
-Navigate to the repository a git bash shell (or equivalent), and type "npm install" to install the application's dependencies, then type "node server.js".
+Navigate to the repository a git bash shell (or equivalent), and type "npm install" to install the application's dependencies, then type "node server.js". You will be greeted by a text-graphic of the words "Employee Manager", followed by several menu options you can scroll through with the arrow keys, and select with enter.
 
-***[USAGE GUIDE]***
+If you choose one of the menu options to view from the database, you will be presented with the appropriate table. If you choose one of the menu options to add to the database, you will be presented with a series of questions to collect the data needed to add a new entry to the database to your chosen section, after which it will be submitted. If you choose to update an employee's role, you will be prompted to choose the employee whose role you want to update, and the role you want to reassign them to, after which their data will be updated as per your requested changes.
+
+After each operation has been completed, you will be returned to the main menu.
 
 ## Demo
 
-See a video demonstrating the application's functionality [here](https://drive.google.com/file/d/1XECtJYSkQwwINax6ozshTokKuGojLQSx/view?usp=sharing)
+See a video demonstrating the application's functionality [here](https://drive.google.com/file/d/12SnqiEOu8HYwEJH0NTcpslRvM-v49KRt/view?usp=sharing)
 
 ## Credits
-
-.promise() wrapper syntax (./server.js, LINES GO HERE);
-https://www.npmjs.com/package/mysql2#using-promise-wrapper
-
-try / catch syntax (./server.js, LINES GO HERE);
-https://www.w3schools.com/js/js_errors.asp
-
-SELF JOIN syntax (./server.js, LINES GO HERE);
-https://www.w3schools.com/sql/sql_join_self.asp
 
 MIT License Badge (./README.md, line 1);
 https://gist.github.com/lukas-h/2a5d00690736b4c3a7ba

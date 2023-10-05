@@ -257,11 +257,8 @@ const processMenuChoice = async (data) =>
 
         let manager_id; //variable to hold the ID of the new employee's manager
 
-        if (data.employeeManager === "None") //if the user did not assign a manager to the new employee, set the manager_id to NULL
-        {
-          manager_id = "NULL";
-        }
-        else //otherwise (i.e. the user assigned a manager to the new employee), retrieve the manager's ID
+        //if the employee's manager is not "None" (i.e. the user assigned a manager to the new employee), retrieve the manager's ID
+        if (data.employeeManager !== "None") 
         {
           manager_id = await db.promise().query(`SELECT id FROM employee WHERE CONCAT(first_name, " ", last_name) = ?`, [data.employeeManager])
           .then(([rows]) => rows[0].id) //returns the ID of the department the user chose the new role to fall under
