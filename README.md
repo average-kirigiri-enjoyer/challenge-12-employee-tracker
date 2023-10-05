@@ -6,7 +6,7 @@ Overseeing a company - especially a large one with lots of employees & tasks to 
 
 ## Installation
 
-Download the repository files to your computer, and extract the zipped files to a dedicated folder. Navigate to the folder, and rename the ".env.EXAMPLE" file to ".env", and then fill in the empty strings with the appropriate details. DB_USER should contain your MySQL username, DB_PASS your password, and DB_NAME the name of the database to use - in this case, "employees_db".
+Download the repository files to your computer, and extract the zipped files to a dedicated folder. Navigate to the folder, and rename the ".env.EXAMPLE" file to ".env", and then fill in the empty strings with the appropriate details. DB_USER should contain your MySQL username, DB_PASSWORD your password, and DB_NAME the name of the database to use - in this case, "employees_db".
 
 ## Requirements
 
